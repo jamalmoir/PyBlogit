@@ -1,5 +1,5 @@
 """
-pyblogit.blog_model
+pyblogit.blogs
 ~~~~~~~~~~~~~~~~~~~
 
 This module contains the data model to represent a blog and methods to
