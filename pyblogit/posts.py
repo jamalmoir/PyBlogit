@@ -7,6 +7,7 @@ to manipulate it.
 """
 
 class post(object):
+    """The post data model"""
 
     def __init__(self, post_id, title, url, author, content, images, labels,
             status):
