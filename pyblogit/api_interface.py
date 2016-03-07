@@ -31,7 +31,7 @@ class BloggerInterface(object):
 
     def generate_token(self, code):
         """Generates new api access token."""
-            self._token = token.get_access_token(code)
+        self._token = token.get_access_token(code)
 
     def get_client(self):
         """Returns an authorised blogger api client."""
