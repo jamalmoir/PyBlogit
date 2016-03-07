@@ -16,19 +16,15 @@ class BloggerInterface(object):
     def __init__(self):
         #TODO
 
-    def get_access_code(self):
-        """Opens dafualt browser to the google auth page and provides
-        them with an authorisation code."""
-        flow = oauth2client.client.OAuth2WebServerFlow(client_id,
-                client_secret, scope)
-
-        auth_uri = flow.step1_get_authorize_url()
-
-        webbrowser.open_new_tab(auth_uri)
-
     def get_credentials(self):
         """Gets google api credentials, or generates new credentials
         if they don't exist or are invalid."""
+        client_id = ''
+        client_secret = ''
+        scope = 'https://www.googleapis.com/blogger'
+
+        flow = oasuth2client.client.OAuth2WebServerFlow(client_id,
+                client_secret, scope)
         storage = oauth2client.file.Storage('credentials.dat')
         credentials = storage.get()
 
@@ -40,18 +36,9 @@ class BloggerInterface(object):
 
     def get_service(self):
         """Returns an authorised blogger api service."""
+        credentials = self.get_credentials()
         http = httplib2.Http()
         http = credentials.authorize(http)
         service = build('blogger', 'v3', http=http)
 
         return service
-
-def get_client():
-    interface = BloggerInterface()
-    client = interface.get_client()
-
-    return client
-
-def get_blog(url):
-    client = get_client()
-    
