@@ -8,7 +8,6 @@ beign developed, often no longer working properly.
 This project was born by a personal need for such software.
 
 #Packages
-- [requests](https://github.com/kennethreitz/requests)
 
 #Roadmap
 - Add support for blogger post creation and deletion
