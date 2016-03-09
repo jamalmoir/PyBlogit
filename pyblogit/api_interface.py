@@ -8,29 +8,36 @@ blogging platform apis.
 
 import oauth2client.client
 import oauth2client.file
+import apiclient.discovery
 import httplib2
+import json
+import webbrowser
 
 class BloggerInterface(object):
     """Connects to blogger api and authorises client."""
-
-    def __init__(self):
-        #TODO
 
     def get_credentials(self):
         """Gets google api credentials, or generates new credentials
         if they don't exist or are invalid."""
         client_id = ''
         client_secret = ''
-        scope = 'https://www.googleapis.com/blogger'
+        scope = 'https://www.googleapis.com/auth/blogger'
 
-        flow = oasuth2client.client.OAuth2WebServerFlow(client_id,
-                client_secret, scope)
+        flow = oauth2client.client.flow_from_clientsecrets(
+                'client_secret.json', scope,
+                redirect_uri='urn:ietf:wg:oauth:2.0:oob')
+
         storage = oauth2client.file.Storage('credentials.dat')
         credentials = storage.get()
 
-        if not credentials or credientials.invalid:
-            credentials = tools.run_flow(flow, storage,
-                    tools.argparser.parse_args())
+        if not credentials or credentials.invalid:
+            auth_uri = flow.step1_get_authorize_url()
+            webbrowser.open(auth_uri)
+
+            auth_code = input('Enter the auth code: ')
+            credentials = flow.step2_exchange(auth_code)
+
+            storage.put(credentials)
 
         return credentials
 
@@ -39,6 +46,6 @@ class BloggerInterface(object):
         credentials = self.get_credentials()
         http = httplib2.Http()
         http = credentials.authorize(http)
-        service = build('blogger', 'v3', http=http)
+        service = apiclient.discovery.build('blogger', 'v3', http=http)
 
         return service
