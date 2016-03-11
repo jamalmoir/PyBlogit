@@ -52,11 +52,11 @@ class BloggerInterface(object):
         return service
 
     def get_blog(self, blog_id):
-        """Grabs blog details"""
+        """Gets the details ofthe blog withthe id blog_id"""
         BlogDetails = collections.namedtuple('BlogDetails', 'blog_id, name, desc, url')
 
         conn = self.get_service()
-        request = conn.blogs().get(blogId=blog_id, view='AUTHOR')
+        request = conn.blogs().get(blogId=blog_id, view='ADMIN')
         response = request.execute()
 
         name = response.get('name')
@@ -66,3 +66,30 @@ class BloggerInterface(object):
         blog = BlogDetails(blog_id=blog_id, name=name, desc=desc, url=url)
 
         return blog
+
+    def get_posts(self, blog_id, status='live'):
+        """Gets all posts from the blog with the id blog_id"""
+        posts = []
+
+        conn = self.get_service()
+        request = conn.posts().list(blogId=blog_id, view='ADMIN',
+        status=status)
+
+        #Responses are paginated, so a paging loop is required.
+        while request:
+
+            response = request.execute()
+
+            for post in response.get('items', []):
+                post_id = post.get('id')
+                title = post.get('title')
+                url = post.get('url')
+                status = post.get('status')
+                content = post.get('content')
+
+                posts.append({'post_id':post_id, 'title':title, 'url':url,
+                    'status':status, 'content':content})
+
+            request = conn.posts().list_next(request, response)
+
+        return posts
