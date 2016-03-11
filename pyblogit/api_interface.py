@@ -12,6 +12,7 @@ import apiclient.discovery
 import httplib2
 import json
 import webbrowser
+import collections
 
 class BloggerInterface(object):
     """Connects to blogger api and authorises client."""
@@ -49,3 +50,19 @@ class BloggerInterface(object):
         service = apiclient.discovery.build('blogger', 'v3', http=http)
 
         return service
+
+    def get_blog(self, blog_id):
+        """Grabs blog details"""
+        BlogDetails = collections.namedtuple('BlogDetails', 'blog_id, name, desc, url')
+
+        conn = self.get_service()
+        request = conn.blogs().get(blogId=blog_id, view='AUTHOR')
+        response = request.execute()
+
+        name = response.get('name')
+        desc = response.get('description')
+        url = response.get('url')
+
+        blog = BlogDetails(blog_id=blog_id, name=name, desc=desc, url=url)
+
+        return blog
