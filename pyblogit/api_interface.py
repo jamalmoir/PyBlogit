@@ -20,8 +20,6 @@ class BloggerInterface(object):
     def get_credentials(self):
         """Gets google api credentials, or generates new credentials
         if they don't exist or are invalid."""
-        client_id = ''
-        client_secret = ''
         scope = 'https://www.googleapis.com/auth/blogger'
 
         flow = oauth2client.client.flow_from_clientsecrets(
@@ -93,3 +91,25 @@ class BloggerInterface(object):
             request = conn.posts().list_next(request, response)
 
         return posts
+
+    def add_post(self, blog_id, post, is_draft=True):
+        """Adds a new post to the blog with the id blog_id"""
+        conn = self.get_service()
+
+        #post is in the form {title, content, (labels), author_name, author_id.
+        title, content, author_name, author_id, labels = post
+
+        data = {
+                'kind': 'blogger#post',
+                'title': title,
+                'content': content,
+                'labels': labels,
+                'author': {'displayName':author_name, 'id':author_id}
+                }
+
+        request = conn.posts().insert(blogId=blog_id, body=data,
+                isDraft=is_draft)
+        response = request.execute()
+        post_id = response.get('id')
+
+        return post_id
