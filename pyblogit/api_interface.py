@@ -10,9 +10,9 @@ import oauth2client.client
 import oauth2client.file
 import apiclient.discovery
 import httplib2
-import json
 import webbrowser
 import collections
+
 
 class BloggerInterface(object):
     """Connects to blogger api and authorises client."""
@@ -23,8 +23,8 @@ class BloggerInterface(object):
         scope = 'https://www.googleapis.com/auth/blogger'
 
         flow = oauth2client.client.flow_from_clientsecrets(
-                'client_secret.json', scope,
-                redirect_uri='urn:ietf:wg:oauth:2.0:oob')
+            'client_secret.json', scope,
+            redirect_uri='urn:ietf:wg:oauth:2.0:oob')
 
         storage = oauth2client.file.Storage('credentials.dat')
         credentials = storage.get()
@@ -51,7 +51,8 @@ class BloggerInterface(object):
 
     def get_blog(self, blog_id):
         """Gets the details ofthe blog withthe id blog_id."""
-        BlogDetails = collections.namedtuple('BlogDetails', 'blog_id, name, desc, url')
+        BlogDetails = collections.namedtuple(
+            'BlogDetails', 'blog_id, name, desc, url')
 
         conn = self.get_service()
         request = conn.blogs().get(blogId=blog_id, view='ADMIN')
@@ -71,9 +72,9 @@ class BloggerInterface(object):
 
         conn = self.get_service()
         request = conn.posts().list(blogId=blog_id, view='ADMIN',
-        status=status)
+                                    status=status)
 
-        #Responses are paginated, so a paging loop is required.
+        # Responses are paginated, so a paging loop is required.
         while request:
 
             response = request.execute()
@@ -85,8 +86,8 @@ class BloggerInterface(object):
                 status = post.get('status')
                 content = post.get('content')
 
-                posts.append({'post_id':post_id, 'title':title, 'url':url,
-                    'status':status, 'content':content})
+                posts.append({'post_id': post_id, 'title': title, 'url': url,
+                              'status': status, 'content': content})
 
             request = conn.posts().list_next(request, response)
 
@@ -96,19 +97,20 @@ class BloggerInterface(object):
         """Adds a new post to the blog with the id blog_id."""
         conn = self.get_service()
 
-        #post is in the form {title, content, (labels), author_name, author_id.
+        # post is in the form {title, content, (labels), author_name,
+        # author_id.
         title, content, author_name, author_id, labels = post
 
         data = {
-                'kind': 'blogger#post',
-                'title': title,
-                'content': content,
-                'labels': labels,
-                'author': {'displayName':author_name, 'id':author_id}
-                }
+            'kind': 'blogger#post',
+            'title': title,
+            'content': content,
+            'labels': labels,
+            'author': {'displayName': author_name, 'id': author_id}
+        }
 
         request = conn.posts().insert(blogId=blog_id, body=data,
-                isDraft=is_draft)
+                                      isDraft=is_draft)
         response = request.execute()
         post_id = response.get('id')
 
@@ -122,10 +124,10 @@ class BloggerInterface(object):
         title, content, labels = post
 
         data = {
-                'title': title,
-                'content': content,
-                'labels': labels
-                }
+            'title': title,
+            'content': content,
+            'labels': labels
+        }
 
         request = conn.posts().update(blogId=blog_id, postId=post_id, body=data)
         response = request.execute()
