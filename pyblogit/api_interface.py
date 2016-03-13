@@ -113,3 +113,22 @@ class BloggerInterface(object):
         post_id = response.get('id')
 
         return post_id
+
+    def edit_post(self, blog_id, post_id, post):
+        """Edits and existing post with the id post_id from the blog
+        with the id blog_id"""
+        conn = self.get_service()
+
+        title, content, labels = post
+
+        data = {
+                'title': title,
+                'content': content,
+                'labels': labels
+                }
+
+        request = conn.posts().update(blogId=blog_id, postId=post_id, body=data)
+        response = request.execute()
+        updated = response.get('updated')
+
+        return updated
