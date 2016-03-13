@@ -50,7 +50,7 @@ class BloggerInterface(object):
         return service
 
     def get_blog(self, blog_id):
-        """Gets the details ofthe blog withthe id blog_id"""
+        """Gets the details ofthe blog withthe id blog_id."""
         BlogDetails = collections.namedtuple('BlogDetails', 'blog_id, name, desc, url')
 
         conn = self.get_service()
@@ -66,7 +66,7 @@ class BloggerInterface(object):
         return blog
 
     def get_posts(self, blog_id, status='live'):
-        """Gets all posts from the blog with the id blog_id"""
+        """Gets all posts from the blog with the id blog_id."""
         posts = []
 
         conn = self.get_service()
@@ -93,7 +93,7 @@ class BloggerInterface(object):
         return posts
 
     def add_post(self, blog_id, post, is_draft=True):
-        """Adds a new post to the blog with the id blog_id"""
+        """Adds a new post to the blog with the id blog_id."""
         conn = self.get_service()
 
         #post is in the form {title, content, (labels), author_name, author_id.
@@ -115,8 +115,8 @@ class BloggerInterface(object):
         return post_id
 
     def edit_post(self, blog_id, post_id, post):
-        """Edits and existing post with the id post_id from the blog
-        with the id blog_id"""
+        """Edits an existing post with the id post_id from the blog
+        with the id blog_id."""
         conn = self.get_service()
 
         title, content, labels = post
@@ -132,3 +132,11 @@ class BloggerInterface(object):
         updated = response.get('updated')
 
         return updated
+
+    def delete_post(self, blog_id, post_id):
+        """Deletes an existing post with the id post_id from the blog
+        with the id blog_id."""
+        conn = self.get_service()
+
+        request = conn.posts().delete(blogId=blog_id, postId=post_id)
+        request.execute()
