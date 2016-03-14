@@ -12,6 +12,7 @@ This project was born by a personal need for such software.
 #Roadmap
 - [COMPLETE] Add support for blogger post getting, creating, editing and
   deletion
+- Make get_posts() an interator
 - Add basic GUI
 - Add support for wordpress post creation and deltion
 - Add support for layout preview
