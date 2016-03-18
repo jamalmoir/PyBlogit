@@ -24,7 +24,8 @@ def add_blog(blog_id, blog_name):
             'AND name="blogs"').fetchone()
 
         if not exists:
-            c.execute('CREATE TABLE blogs(blog_id INT, blog_name TEXT)')
+            c.execute('CREATE TABLE blogs(blog_id INT PRIMARY KEY,'
+            'blog_name TEXT)')
 
         c.execute('INSERT INTO blogs VALUES (?, ?)', (blog_id, blog_name))
 
@@ -32,8 +33,8 @@ def add_blog(blog_id, blog_name):
         c = conn.cursor()
 
         # Create table to store posts in new blog's database.
-        c.execute('CREATE TABLE posts(post_id INT, title TEXT, url TEXT,'
-                'status TEXT, content TEXT, updated INT)')
+        c.execute('CREATE TABLE posts(post_id INT PRIMARY KEY, title TEXT,'
+                'url TEXT, status TEXT, content TEXT, updated INT)')
 
 def get_blogs():
     """Returns all stored blogs."""
