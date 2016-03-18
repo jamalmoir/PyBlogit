@@ -7,81 +7,71 @@ This module handles the connection and manipulation of the local database.
 import sqlite3
 
 
-def get_cursor(blog_id):
+def get_connection(blog_id):
     """Connects to a local sqlite database"""
-    conn = sqlite3.connect(blog_id)
-    c = conn.cursor()
+    conn = sqlite3.connect(''.join((str(blog_id), '.db')))
 
-    return c
-
+    return conn
 
 def add_blog(blog_id, blog_name):
     """Adds a new blog to the local blogs database and
     creates a new database for the blog."""
-    # These two statements create the database files if
-    # they don't exist.
-    c = get_cursor('blogs')
-    blog_c = get_cursor(blog_id)
+    with get_connection('blogs') as conn:
+        c = conn.cursor()
 
-    # Check if blogs table exists, if it doesn't create it.
-    exists = bool(c.execute('SELECT name FROM sqlite_master WHERE type="table"
-                            AND name="blogs"'))
+        # Check if blogs table exists, if it doesn't create it.
+        exists = c.execute('SELECT name FROM sqlite_master WHERE type="table"'
+            'AND name="blogs"').fetchone()
 
-    if not exists:
-        c.execute('CREATE TABLE blogs(blog_id INT, blog_name TEXT)')
+        if not exists:
+            c.execute('CREATE TABLE blogs(blog_id INT, blog_name TEXT)')
 
-    sql = ('INSERT INTO blogs(blog_id, blog_name) values({blog_id},
-                                                         {blog_name})'.format(blog_id=blog_id, blog_name=blog_name))
+        c.execute('INSERT INTO blogs VALUES (?, ?)', (blog_id, blog_name))
 
-    c.execute(sql)
+    with get_connection(blog_id) as conn:
+        c = conn.cursor()
 
-    # Create table to store posts in new blog's database.
-    blog_c.execute('CREATE TABLE posts(post_id INT, title TEXT, url TEXT,
-                                       status TEXT, content TEXT, updated INT)')
-
+        # Create table to store posts in new blog's database.
+        c.execute('CREATE TABLE posts(post_id INT, title TEXT, url TEXT,'
+                'status TEXT, content TEXT, updated INT)')
 
 def get_blogs():
     """Returns all stored blogs."""
-    c = get_cursor('blogs')
-    blogs = c.execute('SELECT * FROM blogs')
+    with get_connection('blogs') as conn:
+        c = conn.cursor()
+        c.execute('SELECT * FROM blogs')
+        blogs = c.fetchall()
 
     return blogs
 
-
 def get_post(blog_id, post_id):
     """Retrieves a post from a local database."""
-    c = get_cursor(blog_id)
-    sql = 'SELECT * FROM posts WHERE post_id = {p_id}'.format(p_id=post_id)
-
-    c.execute(sql)
-
-    post = c.fetchone()
+    with get_connection(blog_id) as conn:
+        c = conn.cursor()
+        c.execute('SELECT * FROM posts WHERE post_id = {p_id}', (post_id,))
+        post = c.fetchone()
 
     return post
-
 
 def get_posts(blog_id, limit=None):
     """Retrieves all the posts from a local database, if a limit
     is specified, it will retrieve up to that amount of posts."""
-    c = get_cursor(blog_id)
-    sql = 'SELECT * FROM posts'
+    with get_connection(blog_id) as conn:
+        c = conn.cursor()
 
-    if limit:
-        limit = 'LIMIT {lim}'.format(lim=limit)
-        sql = ''.join([sql, limit])
+        if limit:
+            posts = c.execute('SELECT * FROM posts LIMIT ?', (limit,))
+        else:
+            posts = c.execute('SELECT * FROM posts')
 
-    c.execute(sql)
-
-    posts = c.fetchall()
+        posts = c.fetchall()
 
     return posts
 
-
 def update_post(blog_id, post_id, post):
-    # TODO: update post in local database
+    #TODO: update post in local database
     pass
 
-
 def add_post(blog_id, post):
-    # TODO: insert new post in local database
+    #TODO: insert new post in local database
     pass
