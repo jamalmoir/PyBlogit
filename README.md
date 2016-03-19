@@ -10,7 +10,7 @@ This project was born by a personal need for such software.
 #Roadmap
 - [COMPLETE] Add support for blogger post getting, creating, editing and
   deletion
-- Add support for local saving
+- [COMPLETE] Add support for local saving
 - Add basic GUI
 - Add support for offline editing
 - Add support for wordpress post creation and deltion
