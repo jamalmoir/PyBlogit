@@ -20,3 +20,4 @@ This project was born by a personal need for such software.
 #Improvements
 - Make get_posts() an iterator
 - Make BloggerInterface class into a module(?)
+- Store local databases in their own directory
