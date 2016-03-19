@@ -5,6 +5,7 @@ pyblogit.database_handler
 This module handles the connection and manipulation of the local database.
 """
 import sqlite3
+import time
 
 
 def get_connection(blog_id):
@@ -49,7 +50,7 @@ def get_post(blog_id, post_id):
     """Retrieves a post from a local database."""
     with get_connection(blog_id) as conn:
         c = conn.cursor()
-        c.execute('SELECT * FROM posts WHERE post_id = {p_id}', (post_id,))
+        c.execute('SELECT * FROM posts WHERE post_id = ?', (post_id,))
         post = c.fetchone()
 
     return post
@@ -69,10 +70,51 @@ def get_posts(blog_id, limit=None):
 
     return posts
 
-def update_post(blog_id, post_id, post):
-    #TODO: update post in local database
-    pass
+def update_post(blog_id, post_id, title, status, content):
+    """Updates a post in a local database.
 
-def add_post(blog_id, post):
-    #TODO: insert new post in local database
-    pass
+    Parameters:
+    ~~~~~~~~~~~
+    blog_id : int
+        The id of the blog the post belongs to.
+    post_id : int
+        The id of the post.
+    title : str
+        The title of the post.
+    status : str
+        The status of the post. It can be either 'draft' or 'live',
+        case sensitive.
+    content : str
+        The HTML markup of the post.
+    """
+    with get_connection(blog_id) as conn:
+        c = conn.cursor()
+        post = (title, status, content, time.time(), post_id)
+
+        c.execute('UPDATE posts SET title=?, status=?, content=?, updated=?'
+                'WHERE post_id=?', post)
+
+def add_post(blog_id, post_id, title, url, status, content):
+    """Adds a new post to a local database.
+
+    Parameters:
+    ~~~~~~~~~~~
+    blog_id : int
+        The id of the blog the post belongs to.
+    post_id : int
+        The id of the post.
+    title : str
+        The title of the post.
+    url : str
+        The url of the post.
+    status : str
+        The status of the post. It can be either 'draft' or 'live',
+        case sensitive.
+    content : str
+        The HTML markup of the post.
+    """
+    with get_connection(blog_id) as conn:
+        c = conn.cursor()
+        post = (post_id, title, url, status, content, time.time())
+
+        c.execute('INSERT INTO posts VALUES (?, ?, ?, ?, ?, ?)', post)
