@@ -3,7 +3,7 @@ pyblogit is a desktop blogging client written in Python with the aim of filling
 the gap within linux.
 
 Most linux-compatible desktop blogging clients are innactive and no longer
-beign developed, often no longer working properly.
+being developed, often no longer working properly.
 
 This project was born by a personal need for such software.
 
