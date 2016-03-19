@@ -46,29 +46,30 @@ def get_blogs():
 
     return blogs
 
-def get_post(blog_id, post_id):
-    """Retrieves a post from a local database."""
+def add_post(blog_id, post_id, title, url, status, content):
+    """Adds a new post to a local database.
+
+    Parameters:
+    ~~~~~~~~~~~
+    blog_id : int
+        The id of the blog the post belongs to.
+    post_id : int
+        The id of the post.
+    title : str
+        The title of the post.
+    url : str
+        The url of the post.
+    status : str
+        The status of the post. It can be either 'draft' or 'live',
+        case sensitive.
+    content : str
+        The HTML markup of the post.
+    """
     with get_connection(blog_id) as conn:
         c = conn.cursor()
-        c.execute('SELECT * FROM posts WHERE post_id = ?', (post_id,))
-        post = c.fetchone()
+        post = (post_id, title, url, status, content, time.time())
 
-    return post
-
-def get_posts(blog_id, limit=None):
-    """Retrieves all the posts from a local database, if a limit
-    is specified, it will retrieve up to that amount of posts."""
-    with get_connection(blog_id) as conn:
-        c = conn.cursor()
-
-        if limit:
-            posts = c.execute('SELECT * FROM posts LIMIT ?', (limit,))
-        else:
-            posts = c.execute('SELECT * FROM posts')
-
-        posts = c.fetchall()
-
-    return posts
+        c.execute('INSERT INTO posts VALUES (?, ?, ?, ?, ?, ?)', post)
 
 def update_post(blog_id, post_id, title, status, content):
     """Updates a post in a local database.
@@ -94,8 +95,8 @@ def update_post(blog_id, post_id, title, status, content):
         c.execute('UPDATE posts SET title=?, status=?, content=?, updated=?'
                 'WHERE post_id=?', post)
 
-def add_post(blog_id, post_id, title, url, status, content):
-    """Adds a new post to a local database.
+def delete_post(blog_id, post_id):
+    """Deletes a post in a local database.
 
     Parameters:
     ~~~~~~~~~~~
@@ -103,18 +104,32 @@ def add_post(blog_id, post_id, title, url, status, content):
         The id of the blog the post belongs to.
     post_id : int
         The id of the post.
-    title : str
-        The title of the post.
-    url : str
-        The url of the post.
-    status : str
-        The status of the post. It can be either 'draft' or 'live',
-        case sensitive.
-    content : str
-        The HTML markup of the post.
     """
     with get_connection(blog_id) as conn:
         c = conn.cursor()
-        post = (post_id, title, url, status, content, time.time())
 
-        c.execute('INSERT INTO posts VALUES (?, ?, ?, ?, ?, ?)', post)
+        c.execute('DELETE FROM posts WHERE post_id=?', (post_id,))
+
+def get_post(blog_id, post_id):
+    """Retrieves a post from a local database."""
+    with get_connection(blog_id) as conn:
+        c = conn.cursor()
+        c.execute('SELECT * FROM posts WHERE post_id = ?', (post_id,))
+        post = c.fetchone()
+
+    return post
+
+def get_posts(blog_id, limit=None):
+    """Retrieves all the posts from a local database, if a limit
+    is specified, it will retrieve up to that amount of posts."""
+    with get_connection(blog_id) as conn:
+        c = conn.cursor()
+
+        if limit:
+            posts = c.execute('SELECT * FROM posts LIMIT ?', (limit,))
+        else:
+            posts = c.execute('SELECT * FROM posts')
+
+        posts = c.fetchall()
+
+    return posts
