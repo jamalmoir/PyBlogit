@@ -19,7 +19,14 @@ class BloggerInterface(object):
 
     def get_credentials(self):
         """Gets google api credentials, or generates new credentials
-        if they don't exist or are invalid."""
+        if they don't exist or are invalid.
+
+        Returns:
+        ~~~~~~~~
+        credentials : oauth2client.client.OAuth2Credentials
+            An OAuth2Credentials object that can be used to
+            authorise requests.
+        """
         scope = 'https://www.googleapis.com/auth/blogger'
 
         flow = oauth2client.client.flow_from_clientsecrets(
@@ -41,7 +48,14 @@ class BloggerInterface(object):
         return credentials
 
     def get_service(self):
-        """Returns an authorised blogger api service."""
+        """Returns an authorised blogger api service.
+
+        Returns:
+        ~~~~~~~~
+        service : apiclient.discovery.Resource
+            A Resource object with methods for interacting with the
+            blogger service.
+        """
         credentials = self.get_credentials()
         http = httplib2.Http()
         http = credentials.authorize(http)
@@ -50,7 +64,19 @@ class BloggerInterface(object):
         return service
 
     def get_blog(self, blog_id):
-        """Gets the details ofthe blog withthe id blog_id."""
+        """Gets the details ofthe blog withthe id blog_id.
+
+        Parameters:
+        ~~~~~~~~~~~
+        blog_id : int
+            The id of the blog to get.
+
+        Returns:
+        ~~~~~~~~
+        blog : namedtuple
+            A named tuple containing the blog's details. The namedtuple
+            is in the form (blog_id, name, desc, url).
+        """
         BlogDetails = collections.namedtuple(
             'BlogDetails', 'blog_id, name, desc, url')
 
@@ -67,7 +93,22 @@ class BloggerInterface(object):
         return blog
 
     def get_posts(self, blog_id, status='live'):
-        """Gets all posts from the blog with the id blog_id."""
+        """Gets all posts from the blog with the id blog_id.
+
+        Parameters:
+        ~~~~~~~~~~~
+        blog_id : int
+            The id of the blog to get posts from.
+        status : string
+            The status of which type of post to get. It can be either
+            'live' or 'draft' (case sensitive, default 'live')
+
+        Returns:
+        ~~~~~~~~
+        posts : list
+            A list of dictionaries containing a blogs posts. The dictionaries
+            are in the form {post_id, title, url, status, content}.
+        """
         posts = []
 
         conn = self.get_service()
@@ -94,11 +135,26 @@ class BloggerInterface(object):
         return posts
 
     def add_post(self, blog_id, post, is_draft=True):
-        """Adds a new post to the blog with the id blog_id."""
+        """Adds a new post to the blog with the id blog_id.
+
+        Parameters:
+        ~~~~~~~~~~~
+        blog_id : int
+            The id of the blog to add a post to.
+        post : tuple
+            A tuple containing the new posts details. The tuple is in the
+            form (title, content, (labels), author_name, author_id).
+        is_draft : bool
+            A boolean indicating whether the post is a draft
+            or not (default True).
+
+        Returns:
+        ~~~~~~~~
+        post_id : int
+            The id of the newly created post.
+        """
         conn = self.get_service()
 
-        # post is in the form {title, content, (labels), author_name,
-        # author_id.
         title, content, author_name, author_id, labels = post
 
         data = {
@@ -118,7 +174,23 @@ class BloggerInterface(object):
 
     def edit_post(self, blog_id, post_id, post):
         """Edits an existing post with the id post_id from the blog
-        with the id blog_id."""
+        with the id blog_id.
+
+        Parameters:
+        ~~~~~~~~~~~
+        blog_id : int
+            The id of the blog to edit a post of.
+        post_id : int
+            The id of the post to edit.
+        post : tuple
+            A tuple containing the new posts details. The tuple is in the
+            form (title, content, (labels), author_name, author_id).
+
+        Returns:
+        ~~~~~~~~
+        updated : timestamp
+            A timestamp of the time the post was updated.
+        """
         conn = self.get_service()
 
         title, content, labels = post
@@ -137,7 +209,15 @@ class BloggerInterface(object):
 
     def delete_post(self, blog_id, post_id):
         """Deletes an existing post with the id post_id from the blog
-        with the id blog_id."""
+        with the id blog_id.
+
+        Parameters:
+        ~~~~~~~~~~~
+        blog_id : int
+            The id of the blog to delete a post from.
+        post_id : int
+            The id of the post to delete.
+        """
         conn = self.get_service()
 
         request = conn.posts().delete(blogId=blog_id, postId=post_id)
