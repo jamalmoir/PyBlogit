@@ -1,5 +1,5 @@
 from .context import pyblogit
-import pyblogit.api_interface
+import pyblogit.blogger
 import pytest
 import unittest.mock
 
@@ -8,7 +8,7 @@ def test_get_credentials():
     with unittest.mock.patch('oauth2client.client.flow_from_clientsecrets') as mock_flow, \
             unittest.mock.patch('oauth2client.file.Storage') as MockStorage, \
             unittest.mock.patch('webbrowser.open') as mock_wbopen, \
-            unittest.mock.patch('pyblogit.api_interface.input') as mock_input:
+            unittest.mock.patch('pyblogit.blogger.input') as mock_input:
 
         # Set credentials to invalid.
         storage = MockStorage.return_value
@@ -16,7 +16,7 @@ def test_get_credentials():
         credentials.invalid = True
 
         # Run the method and see if we get what we want.
-        result = pyblogit.api_interface.BloggerInterface().get_credentials()
+        result = pyblogit.blogger.get_credentials()
 
         # Check that the flow was initialised correctly.
         mock_flow.assert_called_with('client_secret.json',
@@ -41,12 +41,12 @@ def test_get_credentials():
 
 
 def test_get_service():
-    with unittest.mock.patch('pyblogit.api_interface.BloggerInterface.get_credentials') as mock_blogger, \
+    with unittest.mock.patch('pyblogit.blogger.get_credentials') as mock_blogger, \
             unittest.mock.patch('httplib2.Http') as mock_http, \
             unittest.mock.patch('apiclient.discovery.build') as mock_api:
 
         # Run the method to see if we get what we want.
-        result = pyblogit.api_interface.BloggerInterface().get_service()
+        result = pyblogit.blogger.get_service()
 
         # Credentials should be retrieved and used to authorise an
         # http2lib.Http object. This is then used to build an
