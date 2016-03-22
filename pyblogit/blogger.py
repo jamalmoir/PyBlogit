@@ -12,7 +12,7 @@ import httplib2
 import webbrowser
 import collections
 
-def get_credentials(self):
+def get_credentials():
     """Gets google api credentials, or generates new credentials
     if they don't exist or are invalid.
 
@@ -42,7 +42,7 @@ def get_credentials(self):
 
     return credentials
 
-def get_service(self):
+def get_service():
     """Returns an authorised blogger api service.
 
     Returns:
@@ -51,14 +51,14 @@ def get_service(self):
         A Resource object with methods for interacting with the
         blogger service.
     """
-    credentials = self.get_credentials()
+    credentials = get_credentials()
     http = httplib2.Http()
     http = credentials.authorize(http)
     service = apiclient.discovery.build('blogger', 'v3', http=http)
 
     return service
 
-def get_blog(self, blog_id):
+def get_blog(blog_id):
     """Gets the details ofthe blog withthe id blog_id.
 
     Parameters:
@@ -75,7 +75,7 @@ def get_blog(self, blog_id):
     BlogDetails = collections.namedtuple(
         'BlogDetails', 'blog_id, name, desc, url')
 
-    conn = self.get_service()
+    conn = get_service()
     request = conn.blogs().get(blogId=blog_id, view='ADMIN')
     response = request.execute()
 
@@ -87,7 +87,7 @@ def get_blog(self, blog_id):
 
     return blog
 
-def get_posts(self, blog_id, status='live'):
+def get_posts(blog_id, status='live'):
     """Gets all posts from the blog with the id blog_id.
 
     Parameters:
@@ -106,7 +106,7 @@ def get_posts(self, blog_id, status='live'):
     """
     posts = []
 
-    conn = self.get_service()
+    conn = get_service()
     request = conn.posts().list(blogId=blog_id, view='ADMIN',
                                 status=status)
 
@@ -129,7 +129,7 @@ def get_posts(self, blog_id, status='live'):
 
     return posts
 
-def add_post(self, blog_id, post, is_draft=True):
+def add_post(blog_id, post, is_draft=True):
     """Adds a new post to the blog with the id blog_id.
 
     Parameters:
@@ -148,7 +148,7 @@ def add_post(self, blog_id, post, is_draft=True):
     post_id : int
         The id of the newly created post.
     """
-    conn = self.get_service()
+    conn = get_service()
 
     title, content, author_name, author_id, labels = post
 
@@ -167,7 +167,7 @@ def add_post(self, blog_id, post, is_draft=True):
 
     return post_id
 
-def edit_post(self, blog_id, post_id, post):
+def edit_post(blog_id, post_id, post):
     """Edits an existing post with the id post_id from the blog
     with the id blog_id.
 
@@ -186,7 +186,7 @@ def edit_post(self, blog_id, post_id, post):
     updated : timestamp
         A timestamp of the time the post was updated.
     """
-    conn = self.get_service()
+    conn = get_service()
 
     title, content, labels = post
 
@@ -202,7 +202,7 @@ def edit_post(self, blog_id, post_id, post):
 
     return updated
 
-def delete_post(self, blog_id, post_id):
+def delete_post(blog_id, post_id):
     """Deletes an existing post with the id post_id from the blog
     with the id blog_id.
 
@@ -213,7 +213,7 @@ def delete_post(self, blog_id, post_id):
     post_id : int
         The id of the post to delete.
     """
-    conn = self.get_service()
+    conn = get_service()
 
     request = conn.posts().delete(blogId=blog_id, postId=post_id)
     request.execute()
