@@ -12,6 +12,7 @@ This project was born by a personal need for such software.
   deletion
 - [COMPLETE] Add support for local saving
 - Add basic GUI
+- Add wysiwyg editor
 - Add support for offline editing
 - Add support for wordpress post creation and deltion
 - Add support for layout preview
