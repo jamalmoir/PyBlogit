@@ -25,6 +25,7 @@ sidebar_frame.grid(column=2, row=0, sticky=('N, E, S'))
 sidebar_frame.columnconfigure(2, weight=1)
 sidebar_frame.rowconfigure(0, weight=1)
 
+# Content frame
 title_entry = ttk.Entry(content_frame, width=50)
 title_entry.grid(column=1, row=0, sticky='N E W')
 
@@ -41,6 +42,18 @@ ttk.Label(content_frame, text='Title').grid(column=0, row=0, sticky='N W')
 ttk.Label(content_frame, text='Tags').grid(column=0, row=1, sticky='W')
 ttk.Label(content_frame, text='URL').grid(column=0, row=2, sticky='W')
 ttk.Label(content_frame, text='Content').grid(column=0, row=3, sticky='W')
+
+# Sidebar frame
+posts = []
+local_posts = []
+posts_listbox = tkinter.Listbox(sidebar_frame, listvariable=posts)
+posts_listbox.grid(column=0, row=1, sticky='N W')
+
+local_posts_listbox = tkinter.Listbox(sidebar_frame, listvariable=local_posts)
+local_posts_listbox.grid(column=0, row=3, sticky='W')
+
+ttk.Label(sidebar_frame, text='Posts').grid(column=0, row=0, sticky='N W')
+ttk.Label(sidebar_frame, text='Local Posts').grid(column=0, row=2, sticky='W')
 
 for child in main_frame.winfo_children():
     for c in child.winfo_children():
