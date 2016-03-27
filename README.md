@@ -11,7 +11,8 @@ This project was born by a personal need for such software.
 - [COMPLETE] Add support for blogger post getting, creating, editing and
   deletion
 - [COMPLETE] Add support for local saving
-- Add basic GUI
+- Add basic GUI (no functionality)
+- Add functionality to GUI
 - Add wysiwyg editor
 - Add support for offline editing
 - Add support for wordpress post creation and deltion
