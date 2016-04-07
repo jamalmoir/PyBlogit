@@ -7,65 +7,71 @@ This module builds displays and manages the applications GUI.
 import tkinter
 from tkinter import ttk
 
-root = tkinter.Tk()
-root.title('pyblogit')
-root.option_add('*tearOff', 'FALSE')
 
+class PyblogitGui(ttk.Frame):
+    """The GUI for pyblogit."""
+    def __init__(self, parent, *args, **kwargs):
+        ttk.Frame.__init__(self, parent, *args, **kwargs)
+        self.root = parent
+        self.init_gui()
 
-main_frame = ttk.Frame(root, padding='3 3 12 12')
-main_frame.grid(column=0, row=0, sticky='nesw')
-main_frame.columnconfigure(0, weight=1)
-main_frame.rowconfigure(0, weight=1)
+    def init_gui(self):
+        self.root.title('pyblogit')
+        self.root.option_add('*tearOff', 'FALSE')
 
-menubar = tkinter.Menu(root)
-menu_file = tkinter.Menu(menubar)
-menu_edit = tkinter.Menu(menubar)
-menubar.add_cascade(menu=menu_file, label='File')
-menubar.add_cascade(menu=menu_edit, label='Edit')
-root.config(menu=menubar)
+        self.grid(column=0, row=0, sticky='nesw')
 
-content_frame = ttk.Frame(main_frame, padding='')
-content_frame.grid(column=0, row=0, columnspan=2, sticky='nsw')
-content_frame.columnconfigure(0, weight=1)
-content_frame.rowconfigure(0, weight=1)
+        self.menubar = tkinter.Menu(root)
 
-sidebar_frame = ttk.Frame(main_frame, padding='')
-sidebar_frame.grid(column=2, row=0, sticky='nes')
-sidebar_frame.columnconfigure(2, weight=1)
-sidebar_frame.rowconfigure(0, weight=1)
+        self.menu_file = tkinter.Menu(self.menubar)
+        self.menubar.add_cascade(menu=self.menu_file, label='File')
 
-# Content frame
-title_entry = ttk.Entry(content_frame, width=50)
-title_entry.grid(column=1, row=0, sticky='nw')
+        self.menu_edit = tkinter.Menu(self.menubar)
+        self.menubar.add_cascade(menu=self.menu_edit, label='Edit')
 
-tags_entry = ttk.Entry(content_frame, width=50)
-tags_entry.grid(column=1, row=1, sticky='w')
+        self.root.config(menu=self.menubar)
 
-url_entry = ttk.Entry(content_frame, width=50)
-url_entry.grid(column=1, row=2, sticky='w')
+        self.content_frame = ttk.Frame(self)
+        self.content_frame.grid(column=0, row=0, columnspan=2, sticky='nsw')
 
-content_entry = tkinter.Text(content_frame )
-content_entry.grid(column=0, row=4, columnspan=4, sticky='n')
+        self.sidebar_frame = ttk.Frame(self)
+        self.sidebar_frame.grid(column=2, row=0, sticky='nes')
 
-ttk.Label(content_frame, text='Title').grid(column=0, row=0, sticky='w')
-ttk.Label(content_frame, text='Tags').grid(column=0, row=1, sticky='w')
-ttk.Label(content_frame, text='URL').grid(column=0, row=2, sticky='w')
-ttk.Label(content_frame, text='Content').grid(column=0, row=3, sticky='w')
+        # Content frame
+        self.title_entry = ttk.Entry(self.content_frame)
+        self.title_entry.grid(column=1, row=0, sticky='w')
 
-# Sidebar frame
-posts = []
-local_posts = []
-posts_listbox = tkinter.Listbox(sidebar_frame, listvariable=posts)
-posts_listbox.grid(column=0, row=1, sticky='n')
+        self.tags_entry = ttk.Entry(self.content_frame)
+        self.tags_entry.grid(column=1, row=1, sticky='w')
 
-local_posts_listbox = tkinter.Listbox(sidebar_frame, listvariable=local_posts)
-local_posts_listbox.grid(column=0, row=3, sticky='n')
+        self.url_entry = ttk.Entry(self.content_frame)
+        self.url_entry.grid(column=1, row=2, sticky='w')
 
-ttk.Label(sidebar_frame, text='Posts').grid(column=0, row=0, sticky='n')
-ttk.Label(sidebar_frame, text='Local Posts').grid(column=0, row=2, sticky='n')
+        self.content_entry = tkinter.Text(self.content_frame)
+        self.content_entry.grid(column=0, row=4, columnspan=4, sticky='n')
 
-#for child in main_frame.winfo_children():
-#    for c in child.winfo_children():
-#        c.grid_configure(padx=5, pady=5)
+        ttk.Label(self.content_frame, text='Title').grid(column=0, row=0, sticky='w')
+        ttk.Label(self.content_frame, text='Tags').grid(column=0, row=1, sticky='w')
+        ttk.Label(self.content_frame, text='URL').grid(column=0, row=2, sticky='w')
+        ttk.Label(self.content_frame, text='Content').grid(column=0, row=3, sticky='w')
 
-root.mainloop()
+        # Sidebar frame
+        posts = []
+        local_posts = []
+        self.posts_listbox = tkinter.Listbox(self.sidebar_frame, listvariable=posts)
+        self.posts_listbox.grid(column=0, row=1, sticky='n')
+
+        self.local_posts_listbox = tkinter.Listbox(self.sidebar_frame, listvariable=local_posts)
+        self.local_posts_listbox.grid(column=0, row=3, sticky='n')
+
+        ttk.Label(self.sidebar_frame, text='Posts').grid(column=0, row=0, sticky='n')
+        ttk.Label(self.sidebar_frame, text='Local Posts').grid(column=0, row=2, sticky='n')
+
+        for child in self.winfo_children():
+            for c in child.winfo_children():
+                c.grid_configure(padx=5, pady=5)
+
+if __name__ == '__main__':
+    root = tkinter.Tk()
+    PyblogitGui(root)
+    root.mainloop()
