@@ -11,7 +11,9 @@ This project was born by a personal need for such software.
 - [COMPLETE] Add support for blogger post getting, creating, editing and
   deletion
 - [COMPLETE] Add support for local saving
-- Add basic GUI
+- [COMPLETE] Add basic GUI (no functionality)
+- Add functionality to GUI
+- Add wysiwyg editor
 - Add support for offline editing
 - Add support for wordpress post creation and deltion
 - Add support for layout preview
@@ -19,6 +21,7 @@ This project was born by a personal need for such software.
 
 #Improvements
 - Make get_posts() an iterator
-- Make BloggerInterface class into a module(?)
+- [COMPLETE] Make BloggerInterface class into a module
 - Store local databases in their own directory
 - Get rid of tuple parameters in api_interface.py
+- Improe GUI aesthetics
