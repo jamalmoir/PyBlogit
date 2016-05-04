@@ -12,6 +12,7 @@ import httplib2
 import webbrowser
 import collections
 
+
 def get_credentials():
     """Gets google api credentials, or generates new credentials
     if they don't exist or are invalid.
@@ -42,6 +43,7 @@ def get_credentials():
 
     return credentials
 
+
 def get_service():
     """Returns an authorised blogger api service.
 
@@ -57,6 +59,7 @@ def get_service():
     service = apiclient.discovery.build('blogger', 'v3', http=http)
 
     return service
+
 
 def get_blog(blog_id):
     """Gets the details ofthe blog withthe id blog_id.
@@ -86,6 +89,7 @@ def get_blog(blog_id):
     blog = BlogDetails(blog_id=blog_id, name=name, desc=desc, url=url)
 
     return blog
+
 
 def get_posts(blog_id, status='live'):
     """Gets all posts from the blog with the id blog_id.
@@ -129,6 +133,7 @@ def get_posts(blog_id, status='live'):
 
     return posts
 
+
 def add_post(blog_id, post, is_draft=True):
     """Adds a new post to the blog with the id blog_id.
 
@@ -167,6 +172,7 @@ def add_post(blog_id, post, is_draft=True):
 
     return post_id
 
+
 def edit_post(blog_id, post_id, post):
     """Edits an existing post with the id post_id from the blog
     with the id blog_id.
@@ -201,6 +207,7 @@ def edit_post(blog_id, post_id, post):
     updated = response.get('updated')
 
     return updated
+
 
 def delete_post(blog_id, post_id):
     """Deletes an existing post with the id post_id from the blog

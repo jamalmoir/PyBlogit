@@ -10,6 +10,7 @@ from tkinter import ttk
 
 class PyblogitGui(ttk.Frame):
     """The GUI for pyblogit."""
+
     def __init__(self, parent, *args, **kwargs):
         ttk.Frame.__init__(self, parent, *args, **kwargs)
         self.root = parent
@@ -53,7 +54,7 @@ class PyblogitGui(ttk.Frame):
         self.sidebar_separator = ttk.Separator(self, orient='vertical')
         self.sidebar_separator.grid(column=1, row=0, sticky='ns')
         self.content_separator = ttk.Separator(self.content_frame,
-                orient='horizontal')
+                                               orient='horizontal')
         self.content_separator.grid(column=0, row=3, columnspan=2, sticky='ew')
 
         self.title_label = ttk.Label(self.content_frame, text='Title')
@@ -67,17 +68,17 @@ class PyblogitGui(ttk.Frame):
         posts = []
         local_posts = []
         self.posts_listbox = tkinter.Listbox(self.sidebar_frame,
-                listvariable=posts)
+                                             listvariable=posts)
         self.posts_listbox.grid(column=0, row=1, sticky='n')
 
         self.local_posts_listbox = tkinter.Listbox(self.sidebar_frame,
-                listvariable=local_posts)
+                                                   listvariable=local_posts)
         self.local_posts_listbox.grid(column=0, row=3, sticky='n')
 
         ttk.Label(self.sidebar_frame, text='Posts').grid(column=0, row=0,
-                sticky='n')
+                                                         sticky='n')
         ttk.Label(self.sidebar_frame, text='Local Posts').grid(column=0, row=2,
-                sticky='n')
+                                                               sticky='n')
 
         for child in self.winfo_children():
             for c in child.winfo_children():
