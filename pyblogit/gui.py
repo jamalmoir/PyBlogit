@@ -6,6 +6,8 @@ This module builds displays and manages the applications GUI.
 """
 import tkinter
 from tkinter import ttk
+import database_handler
+import tk_custom_dialog
 
 
 class PyblogitGui(ttk.Frame):
@@ -14,6 +16,16 @@ class PyblogitGui(ttk.Frame):
         ttk.Frame.__init__(self, parent, *args, **kwargs)
         self.root = parent
         self.init_gui()
+
+    def add_blog(self):
+        add_dialog = tk_custom_dialog.AddBlogDialog(self)
+
+        if add_dialog.result:
+            blog_id = add_dialog.result[0]
+            blog_name = add_dialog.result[1]
+
+            database_handler.add_blog(blog_id, blog_name)
+            self.menu_blogs.add_command(label=blog_name, command=None)
 
     def init_gui(self):
         self.root.title('pyblogit')
@@ -26,8 +38,16 @@ class PyblogitGui(ttk.Frame):
         self.menu_file = tkinter.Menu(self.menubar)
         self.menubar.add_cascade(menu=self.menu_file, label='File')
 
-        self.menu_edit = tkinter.Menu(self.menubar)
-        self.menubar.add_cascade(menu=self.menu_edit, label='Edit')
+        self.menu_blogs = tkinter.Menu(self.menubar)
+        self.menubar.add_cascade(menu=self.menu_blogs , label='Blogs')
+
+        self.menu_blogs.add_command(label='Add Blog', command=self.add_blog)
+
+        blogs = database_handler.get_blogs()
+
+        for blog in blogs:
+            self.menu_blogs.add_command(label=blog[1],
+                    command=None)
 
         self.root.config(menu=self.menubar)
 
