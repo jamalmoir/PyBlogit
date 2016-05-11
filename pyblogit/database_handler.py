@@ -70,6 +70,16 @@ def get_blogs():
     """
     with get_connection('blogs') as conn:
         c = conn.cursor()
+
+        # Check if blogs table exists, if it doesn't create it.
+        exists = c.execute('SELECT name FROM sqlite_master WHERE type="table"'
+                           'AND name="blogs"').fetchone()
+
+        if not exists:
+            c.execute('CREATE TABLE blogs(blog_id INT PRIMARY KEY,'
+                      'blog_name TEXT)')
+
+
         c.execute('SELECT * FROM blogs')
         blogs = c.fetchall()
 
