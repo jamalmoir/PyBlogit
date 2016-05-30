@@ -6,6 +6,7 @@ This module handles the connection and manipulation of the local database.
 """
 import sqlite3
 import time
+import os
 
 
 def get_connection(blog_id):
@@ -21,8 +22,9 @@ def get_connection(blog_id):
     conn : sqlite3.Connection
         A sqlite3 Connection object, connected to a local database.
     """
+    os.makedirs(os.path.dirname('data/'), exist_ok=True)
     blog_id = str(blog_id)
-    conn = sqlite3.connect(''.join((blog_id, '.db')))
+    conn = sqlite3.connect(''.join(('data/', blog_id, '.db')))
 
     return conn
 
@@ -78,7 +80,6 @@ def get_blogs():
         if not exists:
             c.execute('CREATE TABLE blogs(blog_id INT PRIMARY KEY,'
                       'blog_name TEXT)')
-
 
         c.execute('SELECT * FROM blogs')
         blogs = c.fetchall()
